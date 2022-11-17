@@ -1,5 +1,6 @@
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,6 +15,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import javax.swing.*;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+
+import com.mysql.cj.xdevapi.Statement;
 /*STEP 1: Load html file from URL & Test to confirm you can output file
  *STEP 2: Add words to Array after removing any HTML, Quotes, and requested parameters 
  *STEP 3: Add cleaned up Array to Arraylist
@@ -113,11 +119,72 @@ public class Main {
 //			  System.out.println("this is first entry "+ firstEntryWord);
 //			  
 //			  TopWordTest.test(firstEntryWord);
+			
+			
+			
+
+
+			
+			
+			
+			
+		
+	
 
 			// Step five : output.
 			for (Map.Entry<String, Integer> entry : map.entrySet()) {
+				String insertWord = "";
+				insertWord = entry.getKey();
+				
+				//DB CONNECT
+				 java.sql.Statement stmt = null;
+				 ResultSet rs = null;
+				  try{
+					   String driver = "com.mysql.cj.jdbc.Driver";
+					   
+					   String urldb ="jdbc:mysql://localhost:3306/poemDb";
+					   String username = "root";
+					   String password = "Bharat@Katyal";
+					   Class.forName(driver);
+					   
+					   Connection conn = DriverManager.getConnection(urldb,username,password);
+					   stmt = conn.createStatement();
+					   
+					   stmt.executeUpdate("INSERT INTO wordOccurrences  (word)" + 
+				                "VALUES ('"+insertWord+"')");
+					   System.out.println(insertWord + " : Has been inserted into DB");
+
+//						rs = stmt.executeQuery("Select word from wordOccurrences");
+
+						 
+						
+//						  while(rs.next()){
+////						         String str = rs.getString("word");//here rs will be having multiple methods for multiple data types, EMP_NAME is the column name
+////						         System.out.println(str);
+//						    }
+		//
+//						    rs.close();           
+
+					   
+					  } catch(Exception e){System.out.println(e);}
+					  
+					  
+
+				
+				
+				// DB CONNECT END
+				
+				
+				
+			
 
 				System.out.println(entry.getKey() + ": " + entry.getValue());
+//				System.out.println(entry.getKey());
+//				   stmt.executeUpdate("INSERT INTO wordOccurrences  (word)" + 
+//			                "VALUES ('"+insertWord+"')");
+				
+				
+				
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -173,6 +240,44 @@ public class Main {
 		// returning the sorted HashMap
 		return result;
 	}
+	
+	public static Connection getConnection() throws Exception{
+//		 Connection conn = null;
+		 java.sql.Statement stmt = null;
+		 ResultSet rs = null;
+		  try{
+			   String driver = "com.mysql.cj.jdbc.Driver";
+			   
+			   String url ="jdbc:mysql://localhost:3306/poemDb";
+			   String username = "root";
+			   String password = "Bharat@Katyal";
+			   Class.forName(driver);
+			   String insertWord= "heeeeee";
+			   
+			   Connection conn = DriverManager.getConnection(url,username,password);
+			   System.out.println("Connected");
+			   stmt = conn.createStatement();
+			   
+			   stmt.executeUpdate("INSERT INTO wordOccurrences  (word)" + 
+		                "VALUES ('"+insertWord+"')");
+//				rs = stmt.executeQuery("Select word from wordOccurrences");
+
+				 
+				
+//				  while(rs.next()){
+////				         String str = rs.getString("word");//here rs will be having multiple methods for multiple data types, EMP_NAME is the column name
+////				         System.out.println(str);
+//				    }
+//
+//				    rs.close();           
+
+			   
+			   return conn;
+			  } catch(Exception e){System.out.println(e);}
+			  
+			  
+			  return null;
+			 }
 
 }
 
